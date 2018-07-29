@@ -4,27 +4,16 @@ const BN = require('bn.js')
 var ABI = function () {
 }
 
-// Convert from short to canonical names
-// FIXME: optimise or make this nicer?
 function elementaryName (name) {
-  if (name.startsWith('int[')) {
-    return 'int256' + name.slice(3)
-  } else if (name === 'int') {
-    return 'int256'
-  } else if (name.startsWith('uint[')) {
-    return 'uint256' + name.slice(4)
-  } else if (name === 'uint') {
-    return 'uint256'
-  } else if (name.startsWith('fixed[')) {
-    return 'fixed128x128' + name.slice(5)
-  } else if (name === 'fixed') {
-    return 'fixed128x128'
-  } else if (name.startsWith('ufixed[')) {
-    return 'ufixed128x128' + name.slice(6)
-  } else if (name === 'ufixed') {
-    return 'ufixed128x128'
-  }
-  return name
+ const nameStart = name.indexOf('[')
+ const type = name.slice(name.length - nameStart)
+ const typeKey = {
+   int: 'int256',
+   uint: 'uint256',
+   fixed: 'fixed128x128',
+   ufixed: 'ufixed128x128'
+ }
+ return typeKey[type]
 }
 
 ABI.eventID = function (name, types) {
